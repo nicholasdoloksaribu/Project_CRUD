@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn VueJS with REST API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style></style>
+  </head>
+  <body>
+    <div id="app">
+      <nav
+        class="bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600"
+      >
+        <div
+          class="container flex flex-wrap items-center justify-between mx-auto"
+        >
+          <a href="index.html" class="flex items-center"
+            ><img
+              src="Aplikasi-Pinjaman-Online.jpg"
+              class="h-6 mr-3 sm:h-9"
+              alt="APLIKASI PINJAMAN ONLINE"
+            /><span
+              class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+              >APLIKASI PINJAMAN ONLINE</span
+            ></a
+          >
+
+          <div
+            class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            id="navbar-sticky"
+          >
+            <ul
+              class="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+            >
+              <li>
+                <a
+                  href="index.html"
+                  class="block py-2 pl-3 pr-4 text-gray-700 bg-blue-700 rounded md:bg-transparent md:p-0 dark:text-white"
+                  aria-current="page"
+                  >Users</a
+                >
+              </li>
+              <li>
+                <a
+                  href="services.html"
+                  class="block py-2 pl-3 pr-4 text-blue-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Services</a
+                >
+              </li>
+              <li>
+                <a
+                  href="document.html"
+                  class="block py-2 pl-3 `pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Document</a
+                >
+              </li>
+              <li>
+                <a
+                  href="transaksi.html"
+                  class="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-white dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Transaksi</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <h1 class="font-bold text-xl ml-10 mt-24">Services</h1>
+
+      <div class="flex mt-10">
+        <table class="border border-slate-800 ml-10">
+          <tr class="border border-slate-800">
+            <th class="border border-slate-800">id</th>
+            <th class="border border-slate-800">Jumlah Pinjaman</th>
+            <th class="border border-slate-800">Jumlah Bunga</th>
+            <th class="border border-slate-800">Actions</th>
+          </tr>
+          <tr class="border border-slate-800" v-for="user in users">
+            <td class="border border-slate-800 text-center">{{user.id}}</td>
+            <td class="border border-slate-800 text-center">
+              RP.{{ user.jml_pinjaman }}
+            </td>
+            <td class="border border-slate-800 text-center">
+              RP.{{ user.jml_bunga}}
+            </td>
+            <td class="border border-slate-800 text-center">
+              <button
+                @click="getEditServices(user)"
+                class="bg-indigo-500 text-white mr-5 rounded-lg px-2"
+              >
+                Edit
+              </button>
+              <button
+                @click="deleteServices(user)"
+                class="bg-indigo-500 text-white rounded-lg px-2"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </table>
+
+        <div class="flex-1 m-4 p-1 border border-gray-200 rounded-xl bg-black">
+          <form @submit.prevent="" class="mt-10">
+            <h1
+              v-if="!isEdit"
+              class="text-2xl mb-2 font-bold leading-none tracking-tight text-gray-900 text-white"
+            >
+              Add User
+            </h1>
+            <h1
+              v-if="isEdit"
+              class="text-2xl mb-2 font-bold leading-none tracking-tight text-gray-900 text-white"
+            >
+              Update User
+            </h1>
+            <label class="text-white">Jumlah Pinjaman </label>
+            <br />
+            <input
+              type="number"
+              v-model="user.jml_pinjaman"
+              placeholder="Jumlah Pinjaman"
+              class="border border-black w-full rounded"
+              required
+            /><br />
+            <label class="text-white">Jumlah Bunga </label>
+            <br />
+            <input
+              type="number"
+              v-model="user.jml_bunga"
+              placeholder="Jumlah Bunga"
+              class="border border-black w-full rounded"
+              required
+            /><br />
+
+            <br />
+
+            <br />
+            <button
+              v-if="!isEdit"
+              @click="addServices"
+              type="submit"
+              class="bg-indigo-500 text-white rounded-md ml-5 p-2 -mt-10"
+            >
+              Add Pinjaman
+            </button>
+            <button
+              v-if="isEdit"
+              @click="updateServices"
+              type="submit"
+              class="bg-indigo-500 text-white rounded-md ml-5 p-2 -mt-10"
+            >
+              Update Pinjaman
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            users: [],
+            user: {
+              jml_pinjaman: "",
+              jml_bunga: "",
+            },
+            isEdit: false,
+            userIdSelected: "",
+            editMode: false,
+          };
+        },
+        mounted: function () {
+          this.getServices();
+        },
+        methods: {
+          getServices() {
+            console.log("hi");
+            axios
+              .get("https://63eb038df1a969340db07ab9.mockapi.io/Services")
+              .then((response) => {
+                this.users = response.data;
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
+          addServices: function () {
+            axios
+              .post("https://63eb038df1a969340db07ab9.mockapi.io/Services", {
+                jml_pinjaman: this.user.jml_pinjaman,
+                jml_bunga: this.user.jml_bunga,
+              })
+              .then((response) => {
+                this.getServices();
+                alert("New Services has been saved");
+                console.log(response);
+                this.resetForm();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
+          getEditServices: function (user) {
+            this.isEdit = true;
+            this.userIdSelected = user.id;
+            this.user.jml_pinjaman = user.jml_pinjaman;
+            this.user.jml_bunga = user.jml_bunga;
+          },
+          updateServices: function () {
+            axios
+              .put(
+                `https://63eb038df1a969340db07ab9.mockapi.io/Services/${this.userIdSelected}`,
+                {
+                  jml_pinjaman: this.user.jml_pinjaman,
+                  jml_bunga: this.user.jml_bunga,
+                }
+              )
+              .then((response) => {
+                this.getServices();
+                alert("Services has been updated");
+                console.log(response);
+                this.isEdit = false;
+                this.resetForm();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          },
+          // Delete Service
+          deleteServices: function (user) {
+            if (confirm("Are you user want to delete this Services?")) {
+              axios
+                .delete(
+                  `https://63eb038df1a969340db07ab9.mockapi.io/Services/${user.id}`
+                )
+                .then((res) => {
+                  // handle success
+                  alert("Services has been deleted");
+                  this.getServices();
+                  this.resetForm();
+                })
+                .catch((err) => {
+                  // handle error
+                  console.log(err);
+                });
+            }
+          },
+          resetForm: function () {
+            this.isEdit = false;
+            this.userIdSelected = null;
+            this.user.jml_pinjaman = "";
+            this.user.jml_bunga = "";
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
